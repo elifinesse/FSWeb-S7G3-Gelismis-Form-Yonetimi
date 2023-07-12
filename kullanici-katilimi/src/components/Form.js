@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import * as Yup from "yup";
 
 const yupSchema = Yup.object().shape({
@@ -60,6 +61,14 @@ function Form() {
   function handleSubmit(e) {
     e.preventDefault();
     setFormData({ isim: "", email: "", sifre: "", tos: "false" });
+    axios
+      .post("https://reqres.in/api/users", formData)
+      .then((res) => {
+        console.log(res.data); // Data was created successfully and logs to console
+      })
+      .catch((err) => {
+        console.log(err); // There was an error creating the data and logs to console
+      });
   }
 
   useEffect(() => {
@@ -80,7 +89,7 @@ function Form() {
           value={formData.isim}
         />
       </label>
-      {errors.name && <p>{errors.name}</p>}
+      {errors.isim && <p>{errors.isim}</p>}
       <label>
         E-mail:{" "}
         <input
