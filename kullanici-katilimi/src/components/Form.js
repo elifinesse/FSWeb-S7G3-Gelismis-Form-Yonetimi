@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import * as Yup from "yup";
 
-const yupScheme = Yup.object().shape({
-  isim: Yup.string().required("Lütfen adınızı yazın."),
+const yupSchema = Yup.object().shape({
+  isim: Yup.string()
+    .required("Lütfen adınızı yazın.")
+    .min(2, "Geçerli bir isim girin."),
   email: Yup.string()
     .email("Geçerli bir e-mail adresi girin.")
     .required("Lütfen e-mail adresinizi yazın."),
-  password: Yup.string()
+  sifre: Yup.string()
     .required("Bir şifre belirleyin.")
     .min(6, "Şifreniz en az 6 karakterden oluşmalıdır."),
-  terms: Yup.boolean().oneOf([true], "Lütfen Kullanım Şartları'nı kabul edin."),
+  tos: Yup.boolean().oneOf([true], "Lütfen Kullanım Şartları'nı kabul edin."),
   // required isn't required for checkboxes.
 });
 
@@ -18,7 +20,7 @@ function Form() {
     isim: "",
     email: "",
     sifre: "",
-    tos: "false",
+    tos: false,
   });
   const [errors, setErrors] = useState({
     isim: "",
@@ -27,49 +29,88 @@ function Form() {
     tos: "",
   });
   const [isFormValid, setFormValid] = useState(false);
-  useEffect(() => {
-    yupScheme.isValid(formData).then((valid) => {
-      setFormValid(valid);
-    });
-  }, [formData]);
-
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    Yup.reach(yupScheme, name)
-      .validate(value)
+    let formValue = type === "checkbox" ? checked : value;
+    /*type === "checkbox"
+      ? setFormData({ ...formData, [name]: checked })
+      : setFormData({ ...formData, [name]: value });*/
+    const newFormData = {
+      ...formData,
+      [name]: formValue,
+    };
+    Yup.reach(yupSchema, name)
+      .validate(formValue)
       .then((valid) => {
+        console.log(valid);
         setErrors({
           ...errors,
           [name]: "",
         });
       })
       .catch((err) => {
+        console.log(err);
         setErrors({
           ...errors,
           [name]: err.errors[0],
         });
       });
-    type === "text"
-      ? setFormData({ ...formData, [name]: value })
-      : setFormData({ ...formData, [name]: checked });
+    setFormData(newFormData);
   }
-  console.log(formData);
+  function handleSubmit(e) {
+    e.preventDefault();
+    setFormData({ isim: "", email: "", sifre: "", tos: "false" });
+  }
+
+  useEffect(() => {
+    yupSchema.isValid(formData).then((valid) => {
+      setFormValid(valid);
+    });
+    console.log(formData);
+  }, [formData]);
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <label>
-        İsim: <input type="text" name="isim" onChange={handleChange} />
+        İsim:{" "}
+        <input
+          type="text"
+          name="isim"
+          onChange={handleChange}
+          value={formData.isim}
+        />
       </label>
+      {errors.name && <p>{errors.name}</p>}
       <label>
-        E-mail: <input type="email" name="email" onChange={handleChange} />
+        E-mail:{" "}
+        <input
+          type="email"
+          name="email"
+          onChange={handleChange}
+          value={formData.email}
+        />
       </label>
+      {errors.email && <p>{errors.email}</p>}
       <label>
-        Şifre: <input type="password" name="sifre" onChange={handleChange} />
+        Şifre:{" "}
+        <input
+          type="password"
+          name="sifre"
+          onChange={handleChange}
+          value={formData.sifre}
+        />
       </label>
+      {errors.sifre && <p>{errors.sifre}</p>}
       <label>
-        <input type="checkbox" name="tos" onChange={handleChange} /> Kullanım
-        şartlarını kabul ediyorum.
+        <input
+          type="checkbox"
+          name="tos"
+          onChange={handleChange}
+          checked={formData.tos}
+        />{" "}
+        Kullanım şartlarını kabul ediyorum.
       </label>
-      <p>{errors.name}</p>
+      {errors.tos && <p>{errors.tos}</p>}
       <button type="submit" disabled={!isFormValid}>
         Gönder
       </button>
