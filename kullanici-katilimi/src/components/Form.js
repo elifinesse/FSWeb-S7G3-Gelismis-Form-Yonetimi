@@ -21,7 +21,7 @@ function Form(props) {
     isim: "",
     email: "",
     sifre: "",
-    tos: false,
+    tos: true,
   });
   const [errors, setErrors] = useState({
     isim: "",

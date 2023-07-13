@@ -5,7 +5,9 @@ import Form from "./components/Form";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [allData, setAllData] = useState([]);
+  const [allData, setAllData] = useState([
+    { isim: "Elif", email: "e@e", sifre: 987654, tos: true },
+  ]);
   const [axiosData, setAxiosData] = useState([]);
   function formGonder(data) {
     setAllData(data);
@@ -23,18 +25,20 @@ function App() {
   return (
     <div className="App">
       <Form submitProp={formGonder} />
-      {axiosData.map((user) => (
-        <div className="user-info" key={user.id}>
-          <h3>Yeni Kullanıcılar:</h3>
-          <p>İsim: {user.isim} </p>
-          <p>E-mail: {user.email}</p>
-          <p>Şifre: {user.sifre} </p>
-          <p>
-            Kullanım Koşulları:
-            {user.tos === true ? " Kabul edilmiş." : ""}{" "}
-          </p>
-        </div>
-      ))}
+      <div data-cy="user-info">
+        {axiosData.map((user) => (
+          <div className="user-info" key={user.id}>
+            <h3>Yeni Kullanıcılar:</h3>
+            <p>İsim: {user.isim} </p>
+            <p>E-mail: {user.email}</p>
+            <p>Şifre: {user.sifre} </p>
+            <p>
+              Kullanım Koşulları:
+              {user.tos === true ? " Kabul edilmiş." : ""}{" "}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
