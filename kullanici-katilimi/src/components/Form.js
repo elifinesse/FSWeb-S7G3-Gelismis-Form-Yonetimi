@@ -18,10 +18,10 @@ const yupSchema = Yup.object().shape({
 function Form(props) {
   const { submitProp } = props;
   const [formData, setFormData] = useState({
-    isim: "hello",
+    isim: "",
     email: "",
     sifre: "",
-    tos: false,
+    tos: true,
   });
   const [errors, setErrors] = useState({
     isim: "",
@@ -29,8 +29,8 @@ function Form(props) {
     sifre: "",
     tos: "",
   });
-  const [allData, setAllData] = useState([]);
   const [isFormValid, setFormValid] = useState(false);
+  const [users, setUsers] = useState([]);
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
     let formValue = type === "checkbox" ? checked : value;
@@ -61,9 +61,8 @@ function Form(props) {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    setAllData([...allData, formData]);
-    console.log(allData);
-    submitProp(allData);
+    //setUsers([...users, formData]);
+    submitProp(formData);
     setFormData({ isim: "", email: "", sifre: "", tos: false });
   }
 
@@ -115,7 +114,7 @@ function Form(props) {
         Kullanım şartlarını kabul ediyorum.
       </label>
       {errors.tos && <p>{errors.tos}</p>}
-      <button type="submit" disabled={!isFormValid}>
+      <button name="submit-button" type="submit" disabled={!isFormValid}>
         Gönder
       </button>
     </form>

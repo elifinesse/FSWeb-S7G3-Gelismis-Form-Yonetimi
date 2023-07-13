@@ -5,30 +5,43 @@ import Form from "./components/Form";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [allData, setAllData] = useState([
-    { isim: "Elif", email: "e@e", sifre: 987654, tos: true },
+  const [tumData, setTumData] = useState([
+    { isim: "Elif", email: "a@a", sifre: 987654, tos: true },
   ]);
-  const [axiosData, setAxiosData] = useState([]);
+
   function formGonder(data) {
-    setAllData(data);
-  }
-  useEffect(() => {
+    console.log("Tüm data", tumData);
     axios
-      .post("https://reqres.in/api/users", allData)
+      .post("https://reqres.in/api/users", data)
+      .then(function (response) {
+        console.log("form gönderildi", response.data);
+        //   console.log(response);
+        setTumData([...tumData, response.data]);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    //setTumData([...tumData, data]);
+    //console.log(tumData);
+  }
+  /*useEffect(() => {
+    axios
+      .post("https://reqres.in/api/users", tumData)
       .then((res) => {
         setAxiosData(res.data); // Data was created successfully and logs to console
+        setTumData([...tumData, ...res.data]);
       })
       .catch((err) => {
         console.log(err); // There was an error creating the data and logs to console
       });
-  }, [allData]);
+  }, [tumData]);*/
   return (
     <div className="App">
       <Form submitProp={formGonder} />
+      <h3>Yeni Kullanıcılar:</h3>
       <div data-cy="user-info">
-        {axiosData.map((user) => (
+        {tumData.map((user) => (
           <div className="user-info" key={user.id}>
-            <h3>Yeni Kullanıcılar:</h3>
             <p>İsim: {user.isim} </p>
             <p>E-mail: {user.email}</p>
             <p>Şifre: {user.sifre} </p>
