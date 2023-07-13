@@ -16,7 +16,8 @@ const yupSchema = Yup.object().shape({
   // required isn't required for checkboxes.
 });
 
-function Form() {
+function Form(props) {
+  const { submitProp } = props;
   const [formData, setFormData] = useState({
     isim: "",
     email: "",
@@ -60,15 +61,8 @@ function Form() {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    setFormData({ isim: "", email: "", sifre: "", tos: "false" });
-    axios
-      .post("https://reqres.in/api/users", formData)
-      .then((res) => {
-        console.log(res.data); // Data was created successfully and logs to console
-      })
-      .catch((err) => {
-        console.log(err); // There was an error creating the data and logs to console
-      });
+    submitProp(formData);
+    setFormData({ isim: "", email: "", sifre: "", tos: false });
   }
 
   useEffect(() => {
