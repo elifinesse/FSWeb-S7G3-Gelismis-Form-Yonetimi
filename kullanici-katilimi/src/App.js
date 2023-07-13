@@ -1,31 +1,40 @@
 import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
-import * as Yup from "yup";
 import Form from "./components/Form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [formData, setFormData] = useState();
+  const [allData, setAllData] = useState([]);
+  const [axiosData, setAxiosData] = useState([]);
   function formGonder(data) {
-    setFormData(data);
+    setAllData(data);
+  }
+  useEffect(() => {
     axios
-      .post("https://reqres.in/api/users", data)
+      .post("https://reqres.in/api/users", allData)
       .then((res) => {
-        console.log(res.data); // Data was created successfully and logs to console
+        setAxiosData(res.data); // Data was created successfully and logs to console
       })
       .catch((err) => {
         console.log(err); // There was an error creating the data and logs to console
       });
-  }
+  }, [allData]);
   return (
     <div className="App">
       <Form submitProp={formGonder} />
-      <h3>Yeni Kullanıcılar:</h3>
-      <p>İsim: </p>
-      <p>E-mail: </p>
-      <p>Şifre: </p>
-      <p>Kullanım Koşulları :</p>
+      {axiosData.map((user) => (
+        <div className="user-info" key={user.id}>
+          <h3>Yeni Kullanıcılar:</h3>
+          <p>İsim: {user.isim} </p>
+          <p>E-mail: {user.email}</p>
+          <p>Şifre: {user.sifre} </p>
+          <p>
+            Kullanım Koşulları:
+            {user.tos === true ? " Kabul edilmiş." : ""}{" "}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

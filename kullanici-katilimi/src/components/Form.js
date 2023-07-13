@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import * as Yup from "yup";
 
 const yupSchema = Yup.object().shape({
@@ -30,6 +29,7 @@ function Form(props) {
     sifre: "",
     tos: "",
   });
+  const [allData, setAllData] = useState([]);
   const [isFormValid, setFormValid] = useState(false);
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -61,7 +61,9 @@ function Form(props) {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    submitProp(formData);
+    setAllData([...allData, formData]);
+    console.log(allData);
+    submitProp(allData);
     setFormData({ isim: "", email: "", sifre: "", tos: false });
   }
 
@@ -69,7 +71,6 @@ function Form(props) {
     yupSchema.isValid(formData).then((valid) => {
       setFormValid(valid);
     });
-    console.log(formData);
   }, [formData]);
 
   return (
