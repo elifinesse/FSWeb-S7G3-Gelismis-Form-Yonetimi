@@ -18,10 +18,10 @@ const yupSchema = Yup.object().shape({
 function Form(props) {
   const { submitProp } = props;
   const [formData, setFormData] = useState({
-    isim: "",
+    isim: "hello",
     email: "",
     sifre: "",
-    tos: true,
+    tos: false,
   });
   const [errors, setErrors] = useState({
     isim: "",
